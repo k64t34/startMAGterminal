@@ -1,0 +1,335 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Monitel.DirectoryClient</name>
+    </assembly>
+    <members>
+        <member name="T:Monitel.DirectoryClient.ADUtils">
+            <summary>
+            Функции для работы с ActiveDirectory
+            </summary>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.CheckPassword(System.String,System.String)">
+            <summary>
+            Проверка пароля пользователя
+            </summary>
+            <param name="userName">Полное имя пользователя</param>
+            <param name="password">Пароль</param>
+            <returns>true, если указанный пароль верный</returns>
+        </member>
+        <member name="P:Monitel.DirectoryClient.ADUtils.CurrentUserName">
+            <summary>
+            Возвращает полное имя текущего пользователя
+            </summary>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetDomainComputerName(System.String,System.String)">
+            <summary>
+            Возращает полное имя компьютера в AD
+            </summary>
+            <param name="dnsShortName">Короткое имя компьютера</param>
+            <param name="domainName">Имя домена, если не задано, то текущий домен</param>
+            <returns></returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetComputerDomainName(System.String)">
+            <summary>
+            Возвращает полное имя домена указанного компьютера
+            </summary>
+            <param name="dnsName"></param>
+            <returns></returns>
+        </member>
+        <member name="P:Monitel.DirectoryClient.ADUtils.CurrentHostName">
+            <summary>
+            Возвращает полное имя текущего компьютера
+            </summary>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetDomainFriendlyName(System.String)">
+            <summary>
+            Возвращает короткое (NetBIOS) имя домена, заданного полным именем. 
+            Например, для monitel.local вернет monitel
+            </summary>
+            <param name="dnsDomainName">Полное (DNS) имя домена</param>
+            <returns></returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetDomains(Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Получить список из текущего домена AD и подруженных с ним
+            </summary>
+            <returns>Список доменов</returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetUsersFromDomain(System.String,Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Получить пользователей из AD
+            </summary>
+            <param name="domainName">Имя домена AD</param>
+            <returns>Список пользователей</returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetHostsFromDomain(System.String,Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Получить перечень компьютеров из AD
+            </summary>
+            <param name="domainName">Имя домена AD</param>
+            <returns>Список компьютеров</returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetHost(System.String,System.Guid,Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Получить описание компьютера из AD
+            </summary>
+            <param name="domainName">Имя домена AD</param>
+            <param name="uid">Идентификатор компьютера</param>
+            <returns>Описание компьютера</returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetGroupsFromDomain(System.String,Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Получить перечень групп из AD
+            </summary>
+            <param name="domainName">Имя домена AD</param>
+            <returns>Список компьютеров</returns>
+        </member>
+        <member name="M:Monitel.DirectoryClient.ADUtils.GetGroup(System.String,System.Guid,Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Получить описание группы AD
+            </summary>
+            <param name="domainName">Имя домена AD</param>
+            <param name="uid">Идентификатор группы</param>
+            <returns>Описание группы</returns>
+        </member>
+        <member name="T:Monitel.Auth.ServerAuthContextExt">
+            <summary>
+            Методы расширения для IAuthContext при использовании на сервере
+            </summary>
+        </member>
+        <member name="T:Monitel.Auth.ServerAuthContextExt.AuthSecret">
+            <summary>
+            Структура для хранения секретов сервиса авторизации
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.ServerAuthContextExt.AuthSecret.ClientKey">
+            <summary>
+            Ключ для клиента
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.ServerAuthContextExt.AuthSecret.ClientSecret">
+            <summary>
+            Ключ
+            </summary>
+        </member>
+        <member name="M:Monitel.Auth.AuthContext.RegisterContext(Monitel.Auth.IAuthContext)">
+            <summary>
+            Регистрация нового контекста безопасности
+            </summary>
+            <param name="context"></param>
+        </member>
+        <member name="M:Monitel.Auth.AuthContext.IsInit">
+            <summary>
+            Is auth context was initialized
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Monitel.Auth.AuthContext.Init(Monitel.PlatformInfrastructure.Logger.IPlatformLogger)">
+            <summary>
+            Initialize authentication context.
+            </summary>
+            <param name="logger">Logger instance</param>
+        </member>
+        <member name="M:Monitel.Auth.AuthContext.Init(System.String,Monitel.PlatformInfrastructure.Logger.IPlatformLogger,System.String,System.String,System.String,System.Boolean,System.Boolean)">
+            <summary>
+            Initialize authentication context.
+            </summary>
+            <param name="serverUrl">Identity server URL in FQDN form</param>
+            <param name="loger">Logger instance</param>
+            <param name="skipSslCertificateValidation">Skip SSL/TLS certificate validation</param>
+            <param name="preferWinPlatformKerberosApi">Prefer windows platform kerberos API. 
+            Requires presense of UserKrbToken module in process working directory. 
+            On Linux ignored.</param>
+        </member>
+        <member name="M:Monitel.Auth.AuthContext.Init(System.String,Monitel.PlatformInfrastructure.Logger.IPlatformLogger,System.Boolean,System.String)">
+            <summary>
+            Инициализация контекста безопасности
+            </summary>
+            <param name="serverUrl">Url сервиса сессий. Шаблон: https://server-name:port/auth</param>
+            <param name="loger">Класс для логирования, может быть не задан</param>
+            <param name="skipSslCertificateValidation">Не проверять валидность SSL/TLS сертификата</param>
+            <param name="app">Имя приложения</param>
+        </member>
+        <member name="M:Monitel.Auth.AuthContext.Create(System.String,Monitel.PlatformInfrastructure.Logger.IPlatformLogger,System.Boolean,System.String)">
+            <summary>
+            Функция-фабрика для создания контекста безопасности
+            </summary>
+            <param name="serverUrl">Url сервиса сессий. Шаблон: https://server-name:port/auth</param>
+            <param name="loger">Класс для логирования, может быть не задан</param>
+            <param name="skipSslCertificateValidation">Не проверять валидность SSL/TLS сертификата</param>
+            <param name="app">Имя приложения</param>
+            <returns>Контекст безопсности</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthAsyncContext.GetSessionAsync">
+            <summary>
+            Получение сессии доступа для текущего пользователя
+            </summary>
+            <returns>Идентификатор сессии</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthAsyncContext.GetSessionForUserAsync(System.String,System.String)">
+            <summary>
+            Получение сессии доступа для пользователя
+            </summary>
+            <param name="userName">Имя пользователя в UPN формате</param>
+            <param name="password">Пароль</param>
+            <returns>Идентификатор сессии</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthAsyncContext.ValidateSessionAsync(System.String,System.String)">
+            <summary>
+            Проверка сессии пользователя и получение сведений о нем
+            </summary>
+            <param name="sessionId"></param>
+            <param name="authSessionId">Идентификатор сессии для аутентификации запроса</param>
+            <returns>Результат проверки сессии, информация о пользователе</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthAsyncContext.ClearValidationCache">
+            <summary>
+            Очистка кеша валидации токенов
+            </summary>
+        </member>
+        <member name="M:Monitel.Auth.IAuthAsyncContext.ClearReqCache">
+            <summary>
+            Очистка кеша запрошенных токенов
+            </summary>
+        </member>
+        <member name="M:Monitel.Auth.IAuthContext.GetSession">
+            <summary>
+            Получение сессии доступа для текущего пользователя
+            </summary>
+            <returns>Идентификатор сессии</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthContext.GetSessionForUser(System.String,System.String)">
+            <summary>
+            Получение сессии доступа для пользователя
+            </summary>
+            <param name="userName">Имя пользователя в UPN формате</param>
+            <param name="password">Пароль</param>
+            <returns>Идентификатор сессии</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthContext.ValidateSession(System.String,Monitel.Auth.SessionInfo@,System.String)">
+            <summary>
+            Проверка сессии пользователя и получение сведений о нем
+            </summary>
+            <param name="sessionId">Идентификатор сессии</param>
+            <param name="sessionInfo">Информация о пользователе</param>
+            <param name="authSessionId">Идентификатор сессии для аутентификации запроса</param>
+            <returns>Признак активной сессии</returns>
+        </member>
+        <member name="M:Monitel.Auth.IAuthContext.Init(Monitel.PlatformInfrastructure.Logger.IPlatformLogger,System.String,System.Boolean,System.String)">
+            <summary>
+            Инициализация контекста безопасности
+            </summary>
+            <param name="log">Класс для логирования, может быть не задан</param>
+            <param name="identityServerUrl">Url сервиса сессий. Шаблон: https://server-name:port/auth</param>
+            <param name="skipSslCertificateValidation">Не проверять валидность SSL/TLS сертификата</param>
+            <param name="app">Имя приложения</param>
+        </member>
+        <member name="P:Monitel.Auth.IAuthContext.IsInit">
+            <summary>
+            Признак инициализации
+            </summary>
+        </member>
+        <member name="M:Monitel.Auth.IAuthContext.ClearCache">
+            <summary>
+            Очистка всех кешей
+            </summary>
+        </member>
+        <member name="M:Monitel.Auth.Logger.Error(System.String,System.Object[])">
+            <summary>
+            Ошибка
+            </summary>
+            <param name="message"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Monitel.Auth.Logger.Error(System.Exception)">
+            <summary>
+            Вывод ошибки
+            </summary>
+            <param name="exp"></param>
+        </member>
+        <member name="M:Monitel.Auth.Logger.Warn(System.String,System.Object[])">
+            <summary>
+            Ошибка
+            </summary>
+            <param name="message"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Monitel.Auth.Logger.Info(System.String,System.Object[])">
+            <summary>
+            Информационное сообщение
+            </summary>
+            <param name="message"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Monitel.Auth.Logger.Debug(System.String,System.Object[])">
+            <summary>
+            Отладочное сообщение
+            </summary>
+            <param name="message"></param>
+            <param name="args"></param>
+        </member>
+        <member name="M:Monitel.Auth.Logger.Trace(System.String,System.Object[])">
+            <summary>
+            Трассировка
+            </summary>
+            <param name="message"></param>
+            <param name="args"></param>
+        </member>
+        <member name="T:Monitel.Auth.SessionInfo">
+            <summary>
+            Метаинформация о сессии доступа
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.SessionInfo.SessionId">
+            <summary>
+            Идентификатор сессии
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.SessionInfo.UserLogin">
+            <summary>
+            Логин пользователя
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.SessionInfo.ValidTo">
+            <summary>
+            Метка времени до которой сессия активна
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.SessionInfo.HostName">
+            <summary>
+            Имя машины с которой осуществлен вход или IP адрес если имя получить не удалось
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.SessionInfo.HostIp">
+            <summary>
+            IP машины с которой осуществлен вход
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.TokenInfo.UserLogin">
+            <summary>
+            Логин пользователя
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.TokenInfo.ValidTo">
+            <summary>
+            Метка времени до которой токен действителен
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.TokenInfo.ValidFrom">
+            <summary>
+            Метка времени выпуска токена
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.TokenInfo.IsSystem">
+            <summary>
+            Признак токена серверной задачи, т.е. токена полученного через Client Credential grant. 
+            </summary>
+        </member>
+        <member name="P:Monitel.Auth.TokenInfo.HostName">
+            <summary>
+            Имя машины запросившей токен, или IP если разрешить имя не удалось
+            </summary>
+        </member>
+    </members>
+</doc>
