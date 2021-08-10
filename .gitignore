@@ -1,0 +1,8 @@
+*.bak
+/obj/*
+/bin/*
+/.vs/*
+Thumbs.db
+
+
+
