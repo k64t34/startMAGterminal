@@ -10,8 +10,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Monitel.Supervisor.Client;
 using System.Threading;
+using Microsoft.Win32;
+using System.Diagnostics;
+
+using Monitel.Supervisor.Client;
 
 namespace startMAGterminal
 {
@@ -21,6 +24,8 @@ namespace startMAGterminal
         string Monitel_PlatformInfrastructure_dll= "Monitel.PlatformInfrastructure.dll";
         string Monitel_Supervisor_Client_dll = "Monitel.Supervisor.Client.dll";
         string Monitel_Supervisor_Infrastructure_dll = "Monitel.Supervisor.Infrastructure.dll";
+        const String regKey_Monitel = @"SOFTWARE\Monitel\CK-11\Installation\";
+        const String regParam_ClientPath = "ClientPath";
         public Form1()
         {
             InitializeComponent();
@@ -31,10 +36,30 @@ namespace startMAGterminal
         private void button1_Click(object sender, EventArgs e)        {            Close();        }
 
         private void Form1_Shown(object sender, EventArgs e)
-        {         
-            //Assembly assembly = Assembly.LoadFrom(Path.Combine(Monitel_CK11_Path, Monitel_Supervisor_Client_dll));
-            //Assembly assembly = Assembly.LoadFrom(Path.Combine(Monitel_CK11_Path,Monitel_Supervisor_Infrastructure_dll));
-            //Assembly assembly = Assembly.LoadFrom(Path.Combine(Monitel_CK11_Path, Monitel_PlatformInfrastructure_dll));            
+        {
+            #region Read registry
+            int logstring=listBox1.Items.Add(@"Чтение реестра HKLM\"+ regKey_Monitel+ regParam_ClientPath);
+            RegistryKey reg, regHKLM;            
+            try
+            {
+                regHKLM = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
+                reg = regHKLM.CreateSubKey(regKey_Monitel, true);
+                Monitel_CK11_Path=reg.GetValue(regParam_ClientPath,"").ToString();
+                if (String.IsNullOrEmpty(Monitel_CK11_Path)) throw new Exception("Не удалось получить информацию из реестра") ;
+                listBox1.Items[logstring]+= " OK";
+                listBox1.Items.Add(Monitel_CK11_Path);
+            }
+            catch (Exception ee)
+            {
+                listBox1.Items.Add(ee.Message);
+            }
+            #endregion
+            //Assembly assembly =
+            //Assembly.LoadFrom(Path.Combine(Monitel_CK11_Path, Monitel_Supervisor_Client_dll));
+            //Assembly assembly =
+            //Assembly.LoadFrom(Path.Combine(Monitel_CK11_Path,Monitel_Supervisor_Infrastructure_dll));
+            //Assembly assembly =
+            //Assembly.LoadFrom(Path.Combine(Monitel_CK11_Path, Monitel_PlatformInfrastructure_dll));            
             var sv = new SupervisorClient();
             while (true)
             {

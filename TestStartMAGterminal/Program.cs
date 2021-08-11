@@ -20,6 +20,11 @@ namespace TestStartMAGterminal
                 {
                     try
                     {
+                        sv = new SupervisorClient();
+                    }
+                    catch (Exception ex) { Console.WriteLine(ex.Message); };
+                        try
+                    {
                         if (!sv.IsConnected)
                         {
                             Console.WriteLine("Connect...");

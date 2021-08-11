@@ -37,12 +37,13 @@ namespace startMAGterminal
             // 
             // progressBar1
             // 
+            this.progressBar1.BackColor = System.Drawing.SystemColors.Desktop;
             this.progressBar1.Location = new System.Drawing.Point(12, 82);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(0);
             this.progressBar1.MarqueeAnimationSpeed = 10;
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(984, 53);
-            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.progressBar1.TabIndex = 2;
             this.progressBar1.Value = 50;
             // 
@@ -63,9 +64,9 @@ namespace startMAGterminal
             this.button_Close.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.button_Close.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Close.ForeColor = System.Drawing.Color.Black;
-            this.button_Close.Location = new System.Drawing.Point(0, 477);
+            this.button_Close.Location = new System.Drawing.Point(0, 473);
             this.button_Close.Name = "button_Close";
-            this.button_Close.Size = new System.Drawing.Size(1004, 56);
+            this.button_Close.Size = new System.Drawing.Size(1000, 56);
             this.button_Close.TabIndex = 2;
             this.button_Close.Text = "Закрыть";
             this.button_Close.UseVisualStyleBackColor = false;
@@ -73,7 +74,9 @@ namespace startMAGterminal
             // 
             // listBox1
             // 
+            this.listBox1.BackColor = System.Drawing.SystemColors.WindowFrame;
             this.listBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBox1.ForeColor = System.Drawing.Color.Gainsboro;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 25;
             this.listBox1.Location = new System.Drawing.Point(0, 156);
@@ -85,7 +88,7 @@ namespace startMAGterminal
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Desktop;
-            this.ClientSize = new System.Drawing.Size(1004, 533);
+            this.ClientSize = new System.Drawing.Size(1000, 529);
             this.ControlBox = false;
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.button_Close);
