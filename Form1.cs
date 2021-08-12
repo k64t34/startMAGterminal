@@ -15,7 +15,6 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.ServiceProcess;
 
-
 using Monitel.Supervisor.Client;
 
 namespace startMAGterminal
@@ -53,6 +52,9 @@ namespace startMAGterminal
             delegateTimerCallback = new TimerCallback(TimerCallback);
             this.Height = 1080;
             this.Width = 1920;
+            this.CenterToScreen(); //DONE: Центрировать форму после измеения размера            
+            this.Text += " v " + Application.ProductVersion; //DONE: Версия программы
+
         }
         public void TimerCallback(object obj)
         {
@@ -75,16 +77,15 @@ namespace startMAGterminal
             else if (Status == -1)
             {
                 Timeout--;
-                if (Timeout <= 0)
-                {
-                    StopTimerAndExit();
-                }
-                else
-                    if (progressBar1.Value > 0)
+                if (progressBar1.Value > 0)
                     Invoke((MethodInvoker)(() =>
                     {
                         progressBar1.Value--;
                     }));
+                if (Timeout <= 0)
+                {
+                    StopTimerAndExit();
+                }                   
             }
         }
         private void button1_Click(object sender, EventArgs e) { StopTimerAndExit(); }
@@ -99,9 +100,20 @@ namespace startMAGterminal
         {
             await Task.Run(() =>
             {
-                //TODO: Проверка что процесс еще не запусщен
-                //TODO: Статистика времени запуска: min, max, average
+                //DONE: Проверка на самозапуск                
+                Process[] SelfProc = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(Application.ExecutablePath));
+                if (SelfProc.Length > 1) Application.Exit();
+                //DONE: Проверка что процесс еще не запусщен
+                Process[] MAGTerminalProc = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exeMAGTerminal));
+                if (MAGTerminalProc.Length > 1)
+                {
+                    logERROR("Процесс "+ exeMAGTerminal+" уже запущен");
+                    ShowDownCount();
+                }
+                //TODO: Статистика времени запуска: min, max, average               
 
+                //TODO: Проверка сетевых служб                
+                log("Графический контроллер "+ Environment.GetEnvironmentVariable("COMPUTERNAME")+"\n");//DONE: Отображение имени ГК
                 #region Get CK11 path from registry
                 log(@"Чтение реестра HKLM\" + regKey_Monitel + regParam_ClientPath);
                 RegistryKey reg, regHKLM;
@@ -235,7 +247,9 @@ namespace startMAGterminal
             {
                 richTextBox1.BackColor = Color.DarkRed;
             }));
-            log("\n\n\nНЕ УДАЛОСЬ ЗАПУСТИТЬ MAG Terminal\n");
+            FontFamily family = new FontFamily("Arial");
+            Font font = new Font(family, 16.0f,FontStyle.Bold);
+            log("\n\n\nНЕ УДАЛОСЬ ЗАПУСТИТЬ MAG Terminal\n",font);//            new Font("Segoe UI", 9, FontStyle.Bold);
             Status = -1;
 #if DEBUG
             Timeout = 10;
@@ -246,9 +260,13 @@ namespace startMAGterminal
             {
                 progressBar1.Maximum = Timeout;
                 progressBar1.Value = Timeout;
-            }));
-
-            //log("\n\n Завершение работы программы через ");
+            }));            //log("\n\n Завершение работы программы через ");
+        }
+        void StopTimerAndExit()
+        {
+            AppTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            Thread.Sleep(5000);
+            Application.Exit();
         }
         void log(String text)
         {
@@ -262,12 +280,7 @@ namespace startMAGterminal
                 richTextBox1.AppendText(text); richTextBox1.ScrollToCaret();
             }
         }
-        void StopTimerAndExit()
-        {
-            AppTimer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
-            Thread.Sleep(10000);
-            Application.Exit();
-        }
+        
         void log(String text,Color c)
         {
             if (richTextBox1.InvokeRequired)
