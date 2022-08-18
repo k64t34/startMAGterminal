@@ -111,9 +111,10 @@ namespace startMAGterminal
                     ShowDownCount();
                 }
                 //TODO: Статистика времени запуска: min, max, average               
+                //TODO: Версия MAGterminal                
 
                 //TODO: Проверка сетевых служб                
-                log("Графический контроллер "+ Environment.GetEnvironmentVariable("COMPUTERNAME")+"\n");//DONE: Отображение имени ГК
+                log("Контроллер видеостены "+ Environment.GetEnvironmentVariable("COMPUTERNAME")+"\n");//DONE: Отображение имени контроллера видеостены
                 #region Get CK11 path from registry
                 log(@"Чтение реестра HKLM\" + regKey_Monitel + regParam_ClientPath);
                 RegistryKey reg, regHKLM;
