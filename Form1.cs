@@ -202,7 +202,7 @@ namespace startMAGterminal
                         {
                             if (!sv.IsConnected)
                             {
-                                sv.Connect();
+                                sv.Connect(null);
                             }
                             if (sv.IsLogged)
                             {
@@ -215,6 +215,10 @@ namespace startMAGterminal
                         log(".");
                     }
                     catch (Exception e)
+                    {
+                        logERROR(e.Message);
+                    }
+                    finally
                     {
                         Thread.Sleep(1000);
                         log(".");
