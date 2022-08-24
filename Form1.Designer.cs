@@ -33,17 +33,19 @@ namespace startMAGterminal
             this.button_Close = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.label_TimeCounter = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // progressBar1
             // 
-            this.progressBar1.BackColor = System.Drawing.SystemColors.Desktop;
+            this.progressBar1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(6)))), ((int)(((byte)(176)))), ((int)(((byte)(37)))));
             this.progressBar1.Dock = System.Windows.Forms.DockStyle.Top;
             this.progressBar1.Location = new System.Drawing.Point(0, 69);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(0);
             this.progressBar1.MarqueeAnimationSpeed = 10;
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(998, 24);
+            this.progressBar1.Size = new System.Drawing.Size(994, 24);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 19;
             // 
             // button_Close
@@ -52,9 +54,9 @@ namespace startMAGterminal
             this.button_Close.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.button_Close.FlatStyle = System.Windows.Forms.FlatStyle.System;
             this.button_Close.ForeColor = System.Drawing.Color.Black;
-            this.button_Close.Location = new System.Drawing.Point(0, 465);
+            this.button_Close.Location = new System.Drawing.Point(0, 461);
             this.button_Close.Name = "button_Close";
-            this.button_Close.Size = new System.Drawing.Size(998, 56);
+            this.button_Close.Size = new System.Drawing.Size(994, 56);
             this.button_Close.TabIndex = 2;
             this.button_Close.Text = "Закрыть";
             this.button_Close.UseVisualStyleBackColor = false;
@@ -70,7 +72,7 @@ namespace startMAGterminal
             this.richTextBox1.ForeColor = System.Drawing.Color.Gainsboro;
             this.richTextBox1.Location = new System.Drawing.Point(0, 93);
             this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.Size = new System.Drawing.Size(998, 372);
+            this.richTextBox1.Size = new System.Drawing.Size(994, 368);
             this.richTextBox1.TabIndex = 4;
             this.richTextBox1.Text = "";
             // 
@@ -80,17 +82,30 @@ namespace startMAGterminal
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.label1.Location = new System.Drawing.Point(0, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(998, 69);
+            this.label1.Size = new System.Drawing.Size(994, 69);
             this.label1.TabIndex = 100;
             this.label1.Text = "Запуск MAG Terminal";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
+            // label_TimeCounter
+            // 
+            this.label_TimeCounter.BackColor = System.Drawing.Color.Transparent;
+            this.label_TimeCounter.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.label_TimeCounter.ForeColor = System.Drawing.Color.Black;
+            this.label_TimeCounter.Location = new System.Drawing.Point(7, 69);
+            this.label_TimeCounter.Name = "label_TimeCounter";
+            this.label_TimeCounter.Size = new System.Drawing.Size(65, 26);
+            this.label_TimeCounter.TabIndex = 103;
+            this.label_TimeCounter.Text = "0";
+            this.label_TimeCounter.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.Desktop;
-            this.ClientSize = new System.Drawing.Size(998, 521);
+            this.ClientSize = new System.Drawing.Size(994, 517);
             this.ControlBox = false;
+            this.Controls.Add(this.label_TimeCounter);
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.button_Close);
             this.Controls.Add(this.progressBar1);
@@ -117,6 +132,7 @@ namespace startMAGterminal
         private System.Windows.Forms.Button button_Close;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label_TimeCounter;
     }
 }
 

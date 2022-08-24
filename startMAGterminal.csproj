@@ -51,6 +51,13 @@
     <ApplicationIcon>startMAGterminal.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Extensions.Caching.Memory">
+      <HintPath>..\..\..\..\..\Program Files\Monitel\CK-11\Client\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Monitel.DirectoryClient, Version=1.16.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\..\..\Program Files\Monitel\CK-11\Client\Monitel.DirectoryClient.dll</HintPath>
+    </Reference>
     <Reference Include="Monitel.PlatformInfrastructure">
       <HintPath>..\..\..\..\..\Program Files\Monitel\CK-11\Client\Monitel.PlatformInfrastructure.dll</HintPath>
     </Reference>

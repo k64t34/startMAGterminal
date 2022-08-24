@@ -15,6 +15,7 @@ using Microsoft.Win32;
 using System.Diagnostics;
 using System.ServiceProcess;
 
+using Monitel.Auth;
 using Monitel.Supervisor.Client;
 
 namespace startMAGterminal
@@ -22,30 +23,33 @@ namespace startMAGterminal
     public partial class Form1 : Form
     {
         string Monitel_CK11_Path = @"C:\Program Files\Monitel\ck11\client";
-        string exeMAGTerminal = "MAGTerminal.exe";
+        string exeMAGTerminal = "MagTerminal.exe";
         //string Monitel_PlatformInfrastructure_dll= "Monitel.PlatformInfrastructure.dll";
         //string Monitel_Supervisor_Client_dll = "Monitel.Supervisor.Client.dll";
         //string Monitel_Supervisor_Infrastructure_dll = "Monitel.Supervisor.Infrastructure.dll";
         const String regKey_Monitel = @"SOFTWARE\Monitel\CK-11\Installation\";
         const String regParam_ClientPath = "ClientPath";
+        DateTime startTime= DateTime.Now, finishTime; // Collect time spend to run        
 #if DEBUG
         int Timeout = 30;
 #else
         int Timeout = 600;
 #endif
+        int TimeCounter = 0;
+        int minTime , maxTime, avavrgTime;             // Statistic time spend previous launches 
         TimerCallback delegateTimerCallback;
         System.Threading.Timer AppTimer;
         Color richTextBox1_SelectionColor;
         Font richTextBox1_SelectionFont;
         FontStyle richTextBox1_SelectionFontStyle;
-        int Status = 1; // 1 - Normal; -1 - countdown
+        int Status = 1; // 1 - Normal -waiting to start service; -1 - countdown - fail to start service and begin countdown before exit; 0 - MagTerminal alredy running
 
         public Form1()
         {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e) {/*/MessageBox.Show("load","");        */
+        private void Form1_Load(object sender, EventArgs e) {/*/MessageBox.Show("load","");        */            
             richTextBox1_SelectionColor = richTextBox1.ForeColor;
             richTextBox1_SelectionFont = richTextBox1.Font;
             richTextBox1_SelectionFontStyle = richTextBox1.Font.Style;
@@ -53,11 +57,19 @@ namespace startMAGterminal
             this.Height = 1080;
             this.Width = 1920;
             this.CenterToScreen(); //DONE: Центрировать форму после измеения размера            
-            this.Text += " v " + Application.ProductVersion; //DONE: Версия программы
+            this.Text += " v " + Application.ProductVersion; //DONE: Версия программы //DONE: Версия MAGterminal                           
+            label_TimeCounter.Left = 0;// (this.Width-label_TimeCounter.Width)/ 2;
+            label_TimeCounter.BackColor = progressBar1.BackColor;            
+            label_TimeCounter.Height=progressBar1.Height-2;
+            label_TimeCounter.Top = progressBar1.Top+1; //TOTO: Прозрачный label в центра прогресс бара
 
+            minTime = Convert.ToInt32( Math.Floor((float)Timeout / 2));
+            maxTime = Timeout;
+            avavrgTime = Convert.ToInt32(Math.Floor((float)(maxTime - minTime) / 2));
         }
         public void TimerCallback(object obj)
         {
+            TimeCounter++;
             if (Status == 1)
             {
                 Timeout--;
@@ -67,6 +79,16 @@ namespace startMAGterminal
                 }
                 else
                 {
+                    /*if (TimeCounter>=minTime)
+                        Invoke((MethodInvoker)(() =>
+                        {
+                            progressBar1.BackColor=Color.Yellow;
+                        }));*/
+                    Invoke((MethodInvoker)(() =>
+                    {
+                        label_TimeCounter.Text= TimeCounter.ToString();
+                    }));
+
                     if (progressBar1.Value + 1 <= progressBar1.Maximum)
                         Invoke((MethodInvoker)(() =>
                         {
@@ -100,23 +122,36 @@ namespace startMAGterminal
         {
             await Task.Run(() =>
             {
+                Thread.Sleep(1000);
                 //DONE: Проверка на самозапуск                
                 Process[] SelfProc = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(Application.ExecutablePath));
                 if (SelfProc.Length > 1) Application.Exit();
-                //DONE: Проверка что процесс еще не запусщен
-                Process[] MAGTerminalProc = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exeMAGTerminal));
-                if (MAGTerminalProc.Length > 1)
+                //DONE: Проверка что процесс еще не запусщен                
+                Process[] MAGTerminalProc = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exeMAGTerminal));                
+                if (MAGTerminalProc.Length > 0)
                 {
-                    logERROR("Процесс "+ exeMAGTerminal+" уже запущен");
+                    logWARN("Процесс "+ exeMAGTerminal+" уже запущен");
+                    Status = 0;
                     ShowDownCount();
-                }
+                    return;
+                }                
                 //TODO: Статистика времени запуска: min, max, average               
-                //TODO: Версия MAGterminal                
 
-                //TODO: Проверка сетевых служб                
-                log("Контроллер видеостены "+ Environment.GetEnvironmentVariable("COMPUTERNAME")+"\n");//DONE: Отображение имени контроллера видеостены
+
+                //TODO: Проверка сетевых служб
+                FontFamily familyArial = new FontFamily("Arial");
+                Font fontArialBold24 = new Font(familyArial, 24.0f, FontStyle.Bold);
+
+                Thread.Sleep(1000);
+                log(TimeCounterStr()+"Контроллер видеостены ");
+                log(Environment.GetEnvironmentVariable("COMPUTERNAME").ToUpper()+"\n", fontArialBold24);                //DONE: Отображение имени контроллера видеостены
+
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Пользователь ");
+                log(Environment.GetEnvironmentVariable("USERDOMAIN")+"\\"+ Environment.GetEnvironmentVariable("USERNAME") + "\n", fontArialBold24);//DONE: Отображение имени контроллера видеостены
                 #region Get CK11 path from registry
-                log(@"Чтение реестра HKLM\" + regKey_Monitel + regParam_ClientPath);
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + @"Чтение реестра HKLM\" + regKey_Monitel + regParam_ClientPath);
                 RegistryKey reg, regHKLM;
                 try
                 {
@@ -125,12 +160,13 @@ namespace startMAGterminal
                     Monitel_CK11_Path = reg.GetValue(regParam_ClientPath, "").ToString();
                     if (String.IsNullOrEmpty(Monitel_CK11_Path)) throw new Exception("Не удалось получить информацию из реестра");
                     logOK();                     ////richTextBox1.SelectionFont = new Font(richTextBox1.Font, richTextBox1.Font.Style | FontStyle.Bold);
-                    log(Monitel_CK11_Path + "\n");
+                    log("\t\t"+Monitel_CK11_Path + "\n");
                 }
                 catch (Exception e) { logERROR(e.Message); ShowDownCount(); return; }
                 #endregion
                 #region Check file MAGTerminal
-                log("Поиск файла " + exeMAGTerminal);
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Поиск файла " + exeMAGTerminal);
                 if (File.Exists(Path.Combine(Monitel_CK11_Path, exeMAGTerminal))) logOK();
                 else
                 {
@@ -142,7 +178,8 @@ namespace startMAGterminal
                 //string svc_description = "Служба управления задачами СК-11 CK11",
                 string scv_name = "CK11SupervisorSvc",
                 svc_title = "CK-11 Supervisor";
-                log("Ожидание запуска службы " + svc_title);
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Ожидание запуска службы " + svc_title);
                 try
                 {
                     ServiceController sc = new ServiceController(scv_name);
@@ -162,7 +199,8 @@ namespace startMAGterminal
                 //svc_description = "Служба обновления клиентских модулей СК-11";
                 scv_name = "CK11AutoUpdService";
                 svc_title = "CK-11 Autoupdate service";
-                log("Ожидание запуска службы " + svc_title);
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Ожидание запуска службы " + svc_title);
                 try
                 {
                     ServiceController sc = new ServiceController(scv_name);
@@ -178,7 +216,8 @@ namespace startMAGterminal
                 //svc_description = "Служба журналирования СК-11";
                 scv_name = "CK11LogWriterService";
                 svc_title = "CK-11 LogWriter";
-                log("Ожидание запуска службы " + svc_title);
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Ожидание запуска службы " + svc_title);
                 try
                 {
                     ServiceController sc = new ServiceController(scv_name);
@@ -190,14 +229,29 @@ namespace startMAGterminal
                     logWARN(" " + e.Message);
                 }
                 #endregion
-                #region UserLogin               
-                log("Ожидание подключения к сервису CK11");
+                #region Auth Monitel User
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Проверка авторизации в CK11 ");
+                try
+                {
+                    AuthContext.Init(null);
+                    logOK();
+                }
+                catch (Exception ex)
+                {
+                    logERROR(ex.Message);                    
+                }
+                #endregion
+                #region UserLogin          
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Ожидание подключения к сервису CK11");
                 Monitel.Supervisor.Client.SupervisorClient sv;
+                sv = new SupervisorClient();
                 while (Status == 1)
                 {
+                    Thread.Sleep(1000);
                     try
-                    {
-                        sv = new SupervisorClient();
+                    {                       
                         if (sv != null)
                         {
                             if (!sv.IsConnected)
@@ -208,53 +262,65 @@ namespace startMAGterminal
                             {
                                 logOK();
                                 break;
-                            }
-                            sv.Dispose();
+                            }                            
                         }
-                        Thread.Sleep(1000);
                         log(".");
                     }
                     catch (Exception e)
                     {
-                        logERROR(e.Message);
-                    }
-                    finally
-                    {
-                        Thread.Sleep(1000);
-                        log(".");
-                    }
+                        log("_("+e.Message+")_,");
+                    }                    
                 }
-                if (Status == -1) return;
+                sv.Dispose();
+                if (Status != 1)
+                {
+                    log("\n");
+                    return;
+                }
                 #endregion
                 #region Run process MAG Terminal
-                log("Ожидание запуска процесса MAGTerminal.exe");
+                Thread.Sleep(1000);
+                log(TimeCounterStr() + "Ожидание запуска процесса MAGTerminal.exe");
+                //DONE: Проверка что процесс еще не запусщен
+                Process[] MAGTerminalProc2 = Process.GetProcessesByName(Path.GetFileNameWithoutExtension(exeMAGTerminal));
+                if (MAGTerminalProc2.Length > 0)
+                {
+                    logWARN("Процесс " + exeMAGTerminal + " уже запущен");
+                    ShowDownCount();
+                }
                 try
                 {
                     //TODO: Проверка что процесс успешно запустился
+                #if ! DEBUG
+
                     Process.Start(Path.Combine(Monitel_CK11_Path, exeMAGTerminal));
                     Invoke((MethodInvoker)(() =>
                     {
                         richTextBox1.BackColor = Color.DarkGreen;
                     }));
+                #endif 
                     logOK();
                     StopTimerAndExit();
 
                 }
                 catch (Exception e) { logERROR(e.Message); ShowDownCount(); }
                 return;
-                #endregion
+#endregion
             });
         }
         void ShowDownCount()
         {
             if (Status == -1) return;
-            Invoke((MethodInvoker)(() =>
+            if (Status != 0)
             {
-                richTextBox1.BackColor = Color.DarkRed;
-            }));
-            FontFamily family = new FontFamily("Arial");
-            Font font = new Font(family, 16.0f,FontStyle.Bold);
-            log("\n\n\nНЕ УДАЛОСЬ ЗАПУСТИТЬ MAG Terminal\n",font);//            new Font("Segoe UI", 9, FontStyle.Bold);
+                Invoke((MethodInvoker)(() =>
+                {
+                    richTextBox1.BackColor = Color.DarkRed;
+                }));
+                FontFamily family = new FontFamily("Arial");
+                Font font = new Font(family, 16.0f, FontStyle.Bold);
+                log("\n\n\nНЕ УДАЛОСЬ ЗАПУСТИТЬ MAG Terminal\n", font);//new Font("Segoe UI", 9, FontStyle.Bold);
+            }
             Status = -1;
 #if DEBUG
             Timeout = 10;
@@ -265,7 +331,8 @@ namespace startMAGterminal
             {
                 progressBar1.Maximum = Timeout;
                 progressBar1.Value = Timeout;
-            }));            //log("\n\n Завершение работы программы через ");
+            }));         
+            log(String.Format("\n\n Завершение работы программы через {0} сек",Timeout));
         }
         void StopTimerAndExit()
         {
@@ -359,6 +426,7 @@ namespace startMAGterminal
             log(" ОШИБКА\n", Color.Red, FontStyle.Bold);
             log(text + "\n"); 
         }
+        String TimeCounterStr() { return String.Format("{0,3} ",TimeCounter); } //TODO:Оптимизировать эту функцию
 
 
     }
