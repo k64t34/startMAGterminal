@@ -162,11 +162,16 @@ namespace startMAGterminal
                     logOK();                     ////richTextBox1.SelectionFont = new Font(richTextBox1.Font, richTextBox1.Font.Style | FontStyle.Bold);
                     log("\t\t"+Monitel_CK11_Path + "\n");
                 }
-                catch (Exception e) { logERROR(e.Message); ShowDownCount(); return; }
+                catch (Exception e)
+                {
+                    logWARN(" "+e.Message);
+                    Monitel_CK11_Path = Path.GetDirectoryName(Application.ExecutablePath); //System.IO.Path.GetDirectoryName(filename)                    Path.GetDirectoryName(filename);                    Path.GetFullPath(fileName);                    Path.GetFullPath(filePath)
+                    log("\t\t" + Monitel_CK11_Path + "\n");
+                }
                 #endregion
                 #region Check file MAGTerminal
                 Thread.Sleep(1000);
-                log(TimeCounterStr() + "Поиск файла " + exeMAGTerminal);
+                log(TimeCounterStr() + "Поиск файла " + exeMAGTerminal+" в папке "+ Monitel_CK11_Path);
                 if (File.Exists(Path.Combine(Monitel_CK11_Path, exeMAGTerminal))) logOK();
                 else
                 {
